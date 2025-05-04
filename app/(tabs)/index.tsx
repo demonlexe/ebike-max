@@ -7,13 +7,14 @@ import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import React, { useState } from "react";
+import { usesMetricSystem } from "react-native-localize";
 
 export default function HomeScreen() {
   const [brand, setBrand] = useState("");
   const [bikeWeight, setBikeWeight] = useState("");
   const [userWeight, setUserWeight] = useState("");
   const [batteryDisplay, setBatteryDisplay] = useState("");
-
+  const usesMetric = usesMetricSystem();
   const handleSubmit = () => {
     // submission logic here
   };
@@ -53,7 +54,9 @@ export default function HomeScreen() {
           </Picker>
         </ThemedView>
 
-        <ThemedText>How much does your bike weigh? (lbs)</ThemedText>
+        <ThemedText>
+          How much does your bike weigh? ({usesMetric ? "kg" : "lbs"})
+        </ThemedText>
         <TextInput
           keyboardType="numeric"
           value={bikeWeight}
@@ -61,7 +64,9 @@ export default function HomeScreen() {
           style={styles.inputStyle}
         />
 
-        <ThemedText>How much do you weigh? (lbs)</ThemedText>
+        <ThemedText>
+          How much do you weigh? ({usesMetric ? "kg" : "lbs"})
+        </ThemedText>
         <TextInput
           keyboardType="numeric"
           value={userWeight}
