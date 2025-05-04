@@ -1,4 +1,4 @@
-import { Picker } from "@react-native-picker/picker";
+import ThemedPicker from "@/components/ThemedPicker";
 import { Image } from "expo-image";
 import { Button, StyleSheet, TextInput } from "react-native";
 
@@ -41,17 +41,18 @@ export default function HomeScreen() {
 
         <ThemedText>What brand is your ebike?</ThemedText>
         <ThemedView style={styles.pickerWrapper}>
-          <Picker
+          <ThemedPicker
             selectedValue={brand}
-            onValueChange={(itemValue) => setBrand(itemValue)}
-          >
-            <Picker.Item label="Select brand" value="" />
-            <Picker.Item label="Rad Power" value="radPower" />
-            <Picker.Item label="Specialized" value="specialized" />
-            <Picker.Item label="Trek" value="trek" />
-            <Picker.Item label="Lectric" value="lectric" />
-            <Picker.Item label="Other" value="other" />
-          </Picker>
+            onValueChange={setBrand}
+            items={[
+              { label: "Select brand", value: "" },
+              { label: "Rad Power", value: "radPower" },
+              { label: "Specialized", value: "specialized" },
+              { label: "Trek", value: "trek" },
+              { label: "Lectric", value: "lectric" },
+              { label: "Other", value: "other" },
+            ]}
+          />
         </ThemedView>
 
         <ThemedText>
@@ -76,14 +77,15 @@ export default function HomeScreen() {
 
         <ThemedText>Bike battery display</ThemedText>
         <ThemedView style={styles.pickerWrapper}>
-          <Picker
+          <ThemedPicker
             selectedValue={batteryDisplay}
-            onValueChange={(itemValue) => setBatteryDisplay(itemValue)}
-          >
-            <Picker.Item label="Select type" value="" />
-            <Picker.Item label="Multimeter" value="multimeter" />
-            <Picker.Item label="Voltmeter" value="voltmeter" />
-          </Picker>
+            onValueChange={setBatteryDisplay}
+            items={[
+              { label: "Select type", value: "" },
+              { label: "Multimeter", value: "multimeter" },
+              { label: "Voltmeter", value: "voltmeter" },
+            ]}
+          />
         </ThemedView>
 
         <Button title="Submit" onPress={handleSubmit} />
