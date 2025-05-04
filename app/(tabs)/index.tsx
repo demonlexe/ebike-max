@@ -33,7 +33,11 @@ export default function HomeScreen() {
         <HelloWave />
       </ThemedView>
       <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Bike Information Form</ThemedText>
+        <ThemedText type="subtitle">{"We're excited you're here!"}</ThemedText>
+        <ThemedText type="subtitle">
+          Please provide this info about your bike, for accurate efficiency
+          calculations.
+        </ThemedText>
 
         <ThemedText>What brand is your ebike?</ThemedText>
         <ThemedView style={styles.pickerWrapper}>
