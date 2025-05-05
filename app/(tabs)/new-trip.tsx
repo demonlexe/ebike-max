@@ -12,36 +12,65 @@ import {
 } from "react-native";
 
 export default function NewTripScreen() {
-  const [origin, setOrigin] = useState("");
-  const [destination, setDestination] = useState("");
-  const [voltage, setVoltage] = useState("");
-  const [tripInsights, setTripInsights] = useState<{
-    elevationGain?: string;
-    elevationLoss?: string;
-    distance?: string;
-  }>({
-    elevationGain: undefined,
-    elevationLoss: undefined,
-    distance: undefined,
+  const [formData, setFormData] = useState({
+    origin: "",
+    destination: "",
+    startVoltage: "",
+    elevationGain: "",
+    elevationLoss: "",
+    distance: "",
   });
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
 
+  // Helper function to update form data
+  const updateFormData = (key: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
+  // Helper function to reset form data
+  const resetFormData = () => {
+    setFormData({
+      origin: "",
+      destination: "",
+      startVoltage: "",
+      elevationGain: "",
+      elevationLoss: "",
+      distance: "",
+    });
+  };
+
   const handleSubmit = () => {
-    if (!origin || !destination || !voltage) {
+    const {
+      origin,
+      destination,
+      startVoltage,
+      elevationGain,
+      elevationLoss,
+      distance,
+    } = formData;
+
+    if (!origin || !destination || !startVoltage) {
       alert("Please fill in all fields.");
       return;
     }
-    if (isNaN(parseFloat(voltage))) {
+    if (isNaN(parseFloat(startVoltage))) {
       alert("Please enter a valid voltage.");
       return;
     }
 
-    const elevationGain = parseFloat(tripInsights.elevationGain || "0");
-    const elevationLoss = parseFloat(tripInsights.elevationLoss || "0");
-    const distance = parseFloat(tripInsights.distance || "0");
-    if (isNaN(elevationGain) || isNaN(elevationLoss) || isNaN(distance)) {
+    const parsedElevationGain = parseFloat(elevationGain || "0");
+    const parsedElevationLoss = parseFloat(elevationLoss || "0");
+    const parsedDistance = parseFloat(distance || "0");
+    if (
+      isNaN(parsedElevationGain) ||
+      isNaN(parsedElevationLoss) ||
+      isNaN(parsedDistance)
+    ) {
       alert(
         "Please enter valid numeric values for elevation gain, loss, and distance."
       );
@@ -52,25 +81,18 @@ export default function NewTripScreen() {
     const dat: NewTripData = {
       origin,
       destination,
-      startVoltage: parseFloat(voltage),
+      startVoltage: parseFloat(startVoltage),
       tripInsights: {
-        elevationGain,
-        elevationLoss,
-        distance,
+        elevationGain: parsedElevationGain,
+        elevationLoss: parsedElevationLoss,
+        distance: parsedDistance,
       },
     };
 
     saveTripData(dat)
       .then(() => {
         alert("Trip data saved successfully!");
-        setOrigin("");
-        setDestination("");
-        setVoltage("");
-        setTripInsights({
-          elevationGain: undefined,
-          elevationLoss: undefined,
-          distance: undefined,
-        });
+        resetFormData(); // Reset the form after successful submission
       })
       .catch((error) => {
         console.error("Error saving trip data:", error);
@@ -107,8 +129,8 @@ export default function NewTripScreen() {
         ]}
         placeholder="e.g. Waffle House, 1647 11th Avenue NE"
         placeholderTextColor={colors.placeholder}
-        value={origin}
-        onChangeText={setOrigin}
+        value={formData.origin}
+        onChangeText={(value) => updateFormData("origin", value)}
       />
 
       <Text style={[styles.label, { color: colors.text }]}>Destination</Text>
@@ -123,8 +145,8 @@ export default function NewTripScreen() {
         ]}
         placeholder="e.g. Downtown San Francisco"
         placeholderTextColor={colors.placeholder}
-        value={destination}
-        onChangeText={setDestination}
+        value={formData.destination}
+        onChangeText={(value) => updateFormData("destination", value)}
       />
 
       <Text style={[styles.label, { color: colors.text }]}>
@@ -141,8 +163,8 @@ export default function NewTripScreen() {
         ]}
         placeholder="e.g. 49.7"
         placeholderTextColor={colors.placeholder}
-        value={voltage}
-        onChangeText={setVoltage}
+        value={formData.startVoltage}
+        onChangeText={(value) => updateFormData("startVoltage", value)}
         keyboardType="decimal-pad"
       />
 
@@ -167,12 +189,9 @@ export default function NewTripScreen() {
         ]}
         placeholder="e.g. 341 ft"
         placeholderTextColor={colors.placeholder}
-        value={tripInsights.elevationGain}
+        value={formData.elevationGain}
         onChangeText={(value) =>
-          setTripInsights({
-            ...tripInsights,
-            elevationGain: safeParseNumber(value),
-          })
+          updateFormData("elevationGain", safeParseNumber(value))
         }
         keyboardType="decimal-pad"
       />
@@ -189,12 +208,9 @@ export default function NewTripScreen() {
         ]}
         placeholder="e.g. 335 ft"
         placeholderTextColor={colors.placeholder}
-        value={tripInsights.elevationLoss}
+        value={formData.elevationLoss}
         onChangeText={(value) =>
-          setTripInsights({
-            ...tripInsights,
-            elevationLoss: safeParseNumber(value),
-          })
+          updateFormData("elevationLoss", safeParseNumber(value))
         }
         keyboardType="decimal-pad"
       />
@@ -211,9 +227,9 @@ export default function NewTripScreen() {
         ]}
         placeholder="e.g. 8.3 miles"
         placeholderTextColor={colors.placeholder}
-        value={tripInsights.distance}
+        value={formData.distance}
         onChangeText={(value) =>
-          setTripInsights({ ...tripInsights, distance: safeParseNumber(value) })
+          updateFormData("distance", safeParseNumber(value))
         }
         keyboardType="decimal-pad"
       />
@@ -250,13 +266,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 16,
     marginBottom: 16,
-  },
-  chartPlaceholder: {
-    height: 80,
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 24,
   },
   buttonContainer: {
     borderRadius: 8,
