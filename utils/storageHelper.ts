@@ -3,17 +3,21 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { v4 as uuidv4 } from "uuid";
 
-export type TripData = {
+export type NewTripData = {
   origin: string;
   destination: string;
   startVoltage: number;
-  endVoltage?: number;
   tripInsights: {
     elevationGain: number;
     elevationLoss: number;
     distance: number;
   };
-  date?: string; // Optional date field
+};
+
+export type TripData = NewTripData & {
+  date: string; // ISO date string
+  id: string;
+  endVoltage?: number;
 };
 
 export type TripDataDictionary = {
@@ -25,7 +29,7 @@ const TRIP_DATA_KEY = "@tripData";
 /**
  * Appends a trip to the stored trip data dictionary.
  */
-export const saveTripData = async (tripData: TripData): Promise<void> => {
+export const saveTripData = async (tripData: NewTripData): Promise<void> => {
   try {
     const existingData = await AsyncStorage.getItem(TRIP_DATA_KEY);
     const tripDict: TripDataDictionary = existingData
@@ -34,9 +38,19 @@ export const saveTripData = async (tripData: TripData): Promise<void> => {
 
     const id = uuidv4();
     const date = new Date().toISOString();
-    tripData.date = date;
+    const { origin, destination, startVoltage, tripInsights } = tripData;
 
-    tripDict[id] = tripData; // Save the trip using the ID as the key
+    const dataToSave: TripData = {
+      id,
+      origin,
+      destination,
+      startVoltage,
+      endVoltage: undefined, // Initially undefined
+      tripInsights,
+      date: date,
+    };
+
+    tripDict[id] = dataToSave; // Save the trip using the ID as the key
 
     await AsyncStorage.setItem(TRIP_DATA_KEY, JSON.stringify(tripDict));
   } catch (e) {

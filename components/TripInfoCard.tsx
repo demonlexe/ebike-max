@@ -1,6 +1,7 @@
 import { safeParseNumber } from "@/utils/safeParseNumber";
 import React, { useState } from "react";
 import {
+  Alert,
   Button,
   StyleSheet,
   Text,
@@ -8,7 +9,7 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import { TripData } from "../utils/storageHelper";
+import { TripData, updateTripData } from "../utils/storageHelper";
 
 type Props = {
   trip: TripData;
@@ -29,7 +30,21 @@ const TripInfoCard: React.FC<Props> = ({ trip }) => {
     secondaryText: isDarkMode ? "#aaa" : "#555",
   };
 
-  const handleSaveEndVoltage = () => {};
+  const handleSaveEndVoltage = async () => {
+    if (editingEndVoltage === undefined || isNaN(Number(editingEndVoltage))) {
+      Alert.alert("Error", "Please enter a valid end voltage.");
+      return;
+    }
+
+    try {
+      // Update the trip data in AsyncStorage
+      await updateTripData(trip.id, { endVoltage: Number(editingEndVoltage) });
+      Alert.alert("Success", "End voltage updated successfully!");
+    } catch (error) {
+      console.error("Failed to update trip data:", error);
+      Alert.alert("Error", "Failed to update trip data.");
+    }
+  };
 
   return (
     <View
@@ -46,26 +61,20 @@ const TripInfoCard: React.FC<Props> = ({ trip }) => {
           Voltage Used: {trip.endVoltage - trip.startVoltage} V
         </Text>
       ) : (
-        <>
-          {
-            <View>
-              <TextInput
-                style={[
-                  styles.input,
-                  { color: colors.text, borderColor: colors.border },
-                ]}
-                placeholder="Enter end voltage"
-                placeholderTextColor={colors.secondaryText}
-                keyboardType="decimal-pad"
-                value={editingEndVoltage?.toString()}
-                onChangeText={(text) =>
-                  setEditingEndVoltage(safeParseNumber(text))
-                }
-              />
-              <Button title="Save" onPress={handleSaveEndVoltage} />
-            </View>
-          }
-        </>
+        <View>
+          <TextInput
+            style={[
+              styles.input,
+              { color: colors.text, borderColor: colors.border },
+            ]}
+            placeholder="Enter end voltage"
+            placeholderTextColor={colors.secondaryText}
+            keyboardType="decimal-pad"
+            value={editingEndVoltage?.toString()}
+            onChangeText={(text) => setEditingEndVoltage(safeParseNumber(text))}
+          />
+          <Button title="Save" onPress={handleSaveEndVoltage} />
+        </View>
       )}
       <Text style={[styles.text, { color: colors.secondaryText }]}>
         Elevation Gain: {trip.tripInsights.elevationGain} ft

@@ -1,5 +1,5 @@
 import { safeParseNumber } from "@/utils/safeParseNumber";
-import { saveTripData, TripData } from "@/utils/storageHelper";
+import { NewTripData, saveTripData } from "@/utils/storageHelper";
 import React, { useState } from "react";
 import {
   Button,
@@ -49,18 +49,17 @@ export default function NewTripScreen() {
       return;
     }
     // Save the trip data
-    const tripData: TripData = {
+    const dat: NewTripData = {
       origin,
       destination,
       startVoltage: parseFloat(voltage),
-      endVoltage: undefined,
       tripInsights: {
         elevationGain,
         elevationLoss,
         distance,
       },
     };
-    saveTripData(tripData)
+    saveTripData(dat)
       .then(() => {
         alert("Trip data saved successfully!");
       })
