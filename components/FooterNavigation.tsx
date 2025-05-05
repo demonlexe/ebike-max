@@ -1,4 +1,5 @@
-import { Ionicons } from "@expo/vector-icons";
+// components/FooterNavigation.tsx
+import Icon from "@react-native-vector-icons/ionicons";
 import React from "react";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -6,17 +7,17 @@ const FooterNavigation = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.iconButton}>
-        <Ionicons name="home-outline" size={24} color="#aaa" />
+        <Icon name="home-outline" size={24} color="#aaa" />
       </TouchableOpacity>
 
       <View style={styles.fabWrapper}>
         <TouchableOpacity style={styles.fab}>
-          <Ionicons name="add" size={28} color="#fff" />
+          <Icon name="add" size={28} color="#fff" />
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity style={styles.iconButton}>
-        <Ionicons name="pulse-outline" size={24} color="#aaa" />
+        <Icon name="pulse-outline" size={24} color="#aaa" />
       </TouchableOpacity>
     </View>
   );
