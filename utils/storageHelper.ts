@@ -7,11 +7,9 @@ export type NewTripData = {
   origin: string;
   destination: string;
   startVoltage: number;
-  tripInsights: {
-    elevationGain: number;
-    elevationLoss: number;
-    distance: number;
-  };
+  elevationGain: number;
+  elevationLoss: number;
+  distance: number;
 };
 
 export type TripData = NewTripData & {
@@ -38,15 +36,24 @@ export const saveTripData = async (tripData: NewTripData): Promise<void> => {
 
     const id = uuidv4();
     const date = new Date().toISOString();
-    const { origin, destination, startVoltage, tripInsights } = tripData;
+    const {
+      origin,
+      destination,
+      startVoltage,
+      elevationGain,
+      elevationLoss,
+      distance,
+    } = tripData;
 
     const dataToSave: TripData = {
       id,
       origin,
       destination,
       startVoltage,
+      elevationGain,
+      elevationLoss,
+      distance,
       endVoltage: undefined, // Initially undefined
-      tripInsights,
       date: date,
     };
 

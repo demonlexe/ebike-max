@@ -86,11 +86,9 @@ export default function NewTripScreen() {
       origin,
       destination,
       startVoltage: parseFloat(startVoltage),
-      tripInsights: {
-        elevationGain: parsedElevationGain,
-        elevationLoss: parsedElevationLoss,
-        distance: parsedDistance,
-      },
+      elevationGain: parsedElevationGain,
+      elevationLoss: parsedElevationLoss,
+      distance: parsedDistance,
     };
 
     saveTripData(dat)

@@ -97,13 +97,13 @@ const TripInfoCard: React.FC<Props> = ({ trip, refreshData }) => {
         </View>
       )}
       <Text style={[styles.text, { color: colors.secondaryText }]}>
-        Elevation Gain: {trip.tripInsights.elevationGain} ft
+        Elevation Gain: {trip.elevationGain} ft
       </Text>
       <Text style={[styles.text, { color: colors.secondaryText }]}>
-        Elevation Loss: {trip.tripInsights.elevationLoss} ft
+        Elevation Loss: {trip.elevationLoss} ft
       </Text>
       <Text style={[styles.text, { color: colors.secondaryText }]}>
-        Distance: {trip.tripInsights.distance} mi
+        Distance: {trip.distance} mi
       </Text>
     </View>
   );
