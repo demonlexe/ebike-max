@@ -42,7 +42,7 @@ export default function Layout() {
       screenOptions={{ headerShown: false }}
     >
       <Tabs.Screen name="index" />
-      <Tabs.Screen name="new" />
+      <Tabs.Screen name="new-trip" />
       <Tabs.Screen name="stats" />
     </Tabs>
   );
