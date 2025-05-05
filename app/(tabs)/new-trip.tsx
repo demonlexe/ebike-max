@@ -13,12 +13,28 @@ export default function NewTripScreen() {
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [voltage, setVoltage] = useState("");
+  const [tripInsights, setTripInsights] = useState<{
+    elevationGain?: number;
+    elevationLoss?: number;
+    distance?: number;
+  }>({
+    elevationGain: undefined,
+    elevationLoss: undefined,
+    distance: undefined,
+  });
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
 
   const handleSubmit = () => {
-    console.log({ origin, destination, voltage });
+    console.log({ origin, destination, voltage, tripInsights });
+  };
+
+  const stringifyIfNumber = (value: number | undefined) => {
+    if (value === undefined) {
+      return undefined;
+    }
+    return String(value);
   };
 
   const colors = {
@@ -98,18 +114,62 @@ export default function NewTripScreen() {
         <Text style={{ color: colors.placeholder }}>[Map Placeholder]</Text>
       </View>
 
-      <Text style={[styles.label, { color: colors.text }]}>Trip Insights</Text>
-      <Text style={[styles.insightText, { color: colors.text }]}>
-        ↑ 341 ft ・↓ 335 ft ・8.3 miles
-      </Text>
-      <View
+      <Text style={[styles.label, { color: colors.text }]}>Elevation Gain</Text>
+      <TextInput
         style={[
-          styles.chartPlaceholder,
-          { backgroundColor: colors.sectionBackground },
+          styles.input,
+          {
+            backgroundColor: colors.inputBackground,
+            borderColor: colors.border,
+            color: colors.text,
+          },
         ]}
-      >
-        <Text style={{ color: colors.placeholder }}>[Chart Placeholder]</Text>
-      </View>
+        placeholder="e.g. 341 ft"
+        placeholderTextColor={colors.placeholder}
+        value={stringifyIfNumber(tripInsights.elevationGain)}
+        onChangeText={(value) =>
+          setTripInsights({ ...tripInsights, elevationGain: parseFloat(value) })
+        }
+        keyboardType="numeric"
+      />
+
+      <Text style={[styles.label, { color: colors.text }]}>Elevation Loss</Text>
+      <TextInput
+        style={[
+          styles.input,
+          {
+            backgroundColor: colors.inputBackground,
+            borderColor: colors.border,
+            color: colors.text,
+          },
+        ]}
+        placeholder="e.g. 335 ft"
+        placeholderTextColor={colors.placeholder}
+        value={stringifyIfNumber(tripInsights.elevationLoss)}
+        onChangeText={(value) =>
+          setTripInsights({ ...tripInsights, elevationLoss: parseFloat(value) })
+        }
+        keyboardType="numeric"
+      />
+
+      <Text style={[styles.label, { color: colors.text }]}>Distance</Text>
+      <TextInput
+        style={[
+          styles.input,
+          {
+            backgroundColor: colors.inputBackground,
+            borderColor: colors.border,
+            color: colors.text,
+          },
+        ]}
+        placeholder="e.g. 8.3 miles"
+        placeholderTextColor={colors.placeholder}
+        value={stringifyIfNumber(tripInsights.distance)}
+        onChangeText={(value) =>
+          setTripInsights({ ...tripInsights, distance: parseFloat(value) })
+        }
+        keyboardType="numeric"
+      />
 
       <View style={styles.buttonContainer}>
         <Button title="Done" onPress={handleSubmit} />
@@ -143,10 +203,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 16,
     marginBottom: 16,
-  },
-  insightText: {
-    fontSize: 14,
-    marginBottom: 8,
   },
   chartPlaceholder: {
     height: 80,
