@@ -1,6 +1,7 @@
 // utils/storageHelper.ts
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform, ToastAndroid } from "react-native";
 import { v4 as uuidv4 } from "uuid";
 
 export type NewTripData = {
@@ -72,10 +73,13 @@ export const getTripData = async (): Promise<TripDataDictionary | null> => {
   try {
     const storedData = await AsyncStorage.getItem(TRIP_DATA_KEY);
     return storedData ? JSON.parse(storedData) : null;
-  } catch (e) {
-    console.error("Failed to load trip data:", e);
-    return null;
+  } catch (error) {
+    console.error("Error fetching trip data:", error);
+    if (Platform.OS === "android") {
+      ToastAndroid.show("Failed to fetch trip data.", ToastAndroid.LONG); // Show error toast only on Android
+    }
   }
+  return null;
 };
 
 /**
