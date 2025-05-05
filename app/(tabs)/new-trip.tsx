@@ -1,3 +1,4 @@
+import { saveTripData, TripData } from "@/utils/storageHelper";
 import React, { useState } from "react";
 import {
   Button,
@@ -5,8 +6,8 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View,
   useColorScheme,
+  View,
 } from "react-native";
 
 export default function NewTripScreen() {
@@ -27,7 +28,46 @@ export default function NewTripScreen() {
   const isDarkMode = colorScheme === "dark";
 
   const handleSubmit = () => {
-    console.log({ origin, destination, voltage, tripInsights });
+    // validate all fields
+    if (!origin || !destination || !voltage) {
+      alert("Please fill in all fields.");
+      return;
+    }
+    if (isNaN(parseFloat(voltage))) {
+      alert("Please enter a valid voltage.");
+      return;
+    }
+    if (tripInsights.elevationGain === undefined) {
+      alert("Please enter a valid elevation gain.");
+      return;
+    }
+    if (tripInsights.elevationLoss === undefined) {
+      alert("Please enter a valid elevation loss.");
+      return;
+    }
+    if (tripInsights.distance === undefined) {
+      alert("Please enter a valid distance.");
+      return;
+    }
+    // Save the trip data
+    const tripData: TripData = {
+      origin,
+      destination,
+      voltage,
+      tripInsights: {
+        elevationGain: tripInsights.elevationGain,
+        elevationLoss: tripInsights.elevationLoss,
+        distance: tripInsights.distance,
+      },
+    };
+    saveTripData(tripData)
+      .then(() => {
+        alert("Trip data saved successfully!");
+      })
+      .catch((error) => {
+        console.error("Error saving trip data:", error);
+        alert("Failed to save trip data.");
+      });
   };
 
   const stringifyIfNumber = (value: number | undefined) => {
