@@ -1,6 +1,6 @@
+import { safeParseNumber } from "@/utils/safeParseNumber";
 import React, { useState } from "react";
 import {
-  Alert,
   Button,
   StyleSheet,
   Text,
@@ -15,10 +15,9 @@ type Props = {
 };
 
 const TripInfoCard: React.FC<Props> = ({ trip }) => {
-  const [endVoltage, setEndVoltage] = useState<number | undefined>(
-    trip.endVoltage
-  );
-  const [isEditing, setIsEditing] = useState(false);
+  const [editingEndVoltage, setEditingEndVoltage] = useState<
+    string | number | undefined
+  >(trip.endVoltage);
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
@@ -30,15 +29,7 @@ const TripInfoCard: React.FC<Props> = ({ trip }) => {
     secondaryText: isDarkMode ? "#aaa" : "#555",
   };
 
-  const handleSaveEndVoltage = () => {
-    if (endVoltage !== undefined) {
-      // Save the updated endVoltage to the trip data (you may need to update AsyncStorage here)
-      Alert.alert("Success", "End voltage saved!");
-      setIsEditing(false);
-    } else {
-      Alert.alert("Error", "Please enter a valid voltage.");
-    }
-  };
+  const handleSaveEndVoltage = () => {};
 
   return (
     <View
@@ -50,13 +41,13 @@ const TripInfoCard: React.FC<Props> = ({ trip }) => {
       <Text style={[styles.title, { color: colors.text }]}>
         {trip.origin} → {trip.destination}
       </Text>
-      {endVoltage !== undefined ? (
+      {trip.endVoltage !== undefined ? (
         <Text style={[styles.text, { color: colors.secondaryText }]}>
-          Voltage Used: {endVoltage - trip.startVoltage} V
+          Voltage Used: {trip.endVoltage - trip.startVoltage} V
         </Text>
       ) : (
         <>
-          {isEditing ? (
+          {
             <View>
               <TextInput
                 style={[
@@ -65,17 +56,15 @@ const TripInfoCard: React.FC<Props> = ({ trip }) => {
                 ]}
                 placeholder="Enter end voltage"
                 placeholderTextColor={colors.secondaryText}
-                keyboardType="numeric"
-                onChangeText={(text) => setEndVoltage(Number(text))}
+                keyboardType="decimal-pad"
+                value={editingEndVoltage?.toString()}
+                onChangeText={(text) =>
+                  setEditingEndVoltage(safeParseNumber(text))
+                }
               />
               <Button title="Save" onPress={handleSaveEndVoltage} />
             </View>
-          ) : (
-            <Button
-              title="Add End Voltage"
-              onPress={() => setIsEditing(true)}
-            />
-          )}
+          }
         </>
       )}
       <Text style={[styles.text, { color: colors.secondaryText }]}>

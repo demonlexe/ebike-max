@@ -1,3 +1,4 @@
+import { safeParseNumber } from "@/utils/safeParseNumber";
 import { saveTripData, TripData } from "@/utils/storageHelper";
 import React, { useState } from "react";
 import {
@@ -67,15 +68,6 @@ export default function NewTripScreen() {
         console.error("Error saving trip data:", error);
         alert("Failed to save trip data.");
       });
-  };
-
-  const stringifyIfNumber = (value: string | undefined) => {
-    if (value === undefined) {
-      return undefined;
-    }
-    // remove non-numeric characters
-    const numericValue = value.toString().replace(/[^0-9.]/g, "");
-    return numericValue;
   };
 
   const colors = {
@@ -167,9 +159,12 @@ export default function NewTripScreen() {
         ]}
         placeholder="e.g. 341 ft"
         placeholderTextColor={colors.placeholder}
-        value={stringifyIfNumber(tripInsights.elevationGain)}
+        value={tripInsights.elevationGain}
         onChangeText={(value) =>
-          setTripInsights({ ...tripInsights, elevationGain: value })
+          setTripInsights({
+            ...tripInsights,
+            elevationGain: safeParseNumber(value),
+          })
         }
         keyboardType="decimal-pad"
       />
@@ -186,9 +181,12 @@ export default function NewTripScreen() {
         ]}
         placeholder="e.g. 335 ft"
         placeholderTextColor={colors.placeholder}
-        value={stringifyIfNumber(tripInsights.elevationLoss)}
+        value={tripInsights.elevationLoss}
         onChangeText={(value) =>
-          setTripInsights({ ...tripInsights, elevationLoss: value })
+          setTripInsights({
+            ...tripInsights,
+            elevationLoss: safeParseNumber(value),
+          })
         }
         keyboardType="decimal-pad"
       />
@@ -205,9 +203,9 @@ export default function NewTripScreen() {
         ]}
         placeholder="e.g. 8.3 miles"
         placeholderTextColor={colors.placeholder}
-        value={stringifyIfNumber(tripInsights.distance)}
+        value={tripInsights.distance}
         onChangeText={(value) =>
-          setTripInsights({ ...tripInsights, distance: value })
+          setTripInsights({ ...tripInsights, distance: safeParseNumber(value) })
         }
         keyboardType="decimal-pad"
       />
