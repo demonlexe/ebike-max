@@ -1,14 +1,7 @@
 import { TripData, clearAllTripData, getTripData } from "@/utils/storageHelper";
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useState } from "react";
-import {
-  Alert,
-  Button,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Alert, Button, FlatList, StyleSheet, Text, View } from "react-native";
 import TripInfoCard from "../../components/TripInfoCard"; // Adjust the path if necessary
 
 export default function StatsScreen() {
@@ -46,20 +39,18 @@ export default function StatsScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView>
-        {tripData && tripData.length > 0 ? (
-          tripData.map((trip) => (
-            <TripInfoCard
-              key={trip.id}
-              trip={trip}
-              refreshData={fetchTripData} // Pass the callback
-            />
-          ))
-        ) : (
-          <Text style={styles.emptyText}>No trip data available.</Text>
-        )}
-        <Button title="Clear All Trips" onPress={handleClearAll} />
-      </ScrollView>
+      {tripData && tripData.length > 0 ? (
+        <FlatList
+          data={tripData}
+          keyExtractor={(trip) => trip.id}
+          renderItem={({ item }) => (
+            <TripInfoCard trip={item} refreshData={fetchTripData} />
+          )}
+        />
+      ) : (
+        <Text style={styles.emptyText}>No trip data available.</Text>
+      )}
+      <Button title="Clear All Trips" onPress={handleClearAll} />
     </View>
   );
 }
