@@ -1,6 +1,13 @@
-import { TripData, getTripData } from "@/utils/storageHelper";
+import { TripData, clearAllTripData, getTripData } from "@/utils/storageHelper";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text } from "react-native";
+import {
+  Alert,
+  Button,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import TripInfoCard from "../../components/TripInfoCard"; // Adjust the path if necessary
 
 export default function StatsScreen() {
@@ -24,19 +31,36 @@ export default function StatsScreen() {
     fetchTripData();
   }, []);
 
+  const handleClearAll = async () => {
+    try {
+      await clearAllTripData();
+      setTripData(null); // Clear the state
+      Alert.alert("Success", "All trip data has been cleared.");
+    } catch (error) {
+      console.error("Error clearing trip data:", error);
+      Alert.alert("Error", "Failed to clear trip data.");
+    }
+  };
+
   return (
-    <ScrollView style={styles.container}>
-      {tripData && tripData.length > 0 ? (
-        tripData.map((trip, index) => <TripInfoCard key={index} trip={trip} />)
-      ) : (
-        <Text style={styles.emptyText}>No trip data available.</Text>
-      )}
-    </ScrollView>
+    <View style={styles.container}>
+      <ScrollView>
+        {tripData && tripData.length > 0 ? (
+          tripData.map((trip, index) => (
+            <TripInfoCard key={index} trip={trip} />
+          ))
+        ) : (
+          <Text style={styles.emptyText}>No trip data available.</Text>
+        )}
+        <Button title="Clear All Trips" onPress={handleClearAll} />
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 16,
   },
   emptyText: {
