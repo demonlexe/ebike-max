@@ -76,6 +76,10 @@ export default function NewTripScreen() {
       );
       return;
     }
+    if (parsedDistance <= 0) {
+      alert("Distance must be greater than 0.");
+      return;
+    }
 
     // Save the trip data
     const dat: NewTripData = {
