@@ -1,26 +1,52 @@
 import { Ionicons } from "@expo/vector-icons";
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { Tabs, useRouter } from "expo-router";
 import React from "react";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 
-const FooterNavigation = () => {
+function CustomTabBar(props: BottomTabBarProps) {
+  const router = useRouter();
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.iconButton}>
+      <TouchableOpacity
+        style={styles.iconButton}
+        onPress={() => router.push("/")}
+      >
         <Ionicons name="home-outline" size={24} color="#aaa" />
       </TouchableOpacity>
 
       <View style={styles.fabWrapper}>
-        <TouchableOpacity style={styles.fab}>
+        <TouchableOpacity
+          style={styles.fab}
+          onPress={() => router.push("/new-trip")}
+        >
           <Ionicons name="add" size={28} color="#fff" />
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.iconButton}>
+      <TouchableOpacity
+        style={styles.iconButton}
+        onPress={() => router.push("/stats")}
+      >
         <Ionicons name="pulse-outline" size={24} color="#aaa" />
       </TouchableOpacity>
     </View>
   );
-};
+}
+
+export default function Layout() {
+  return (
+    <Tabs
+      tabBar={(props) => <CustomTabBar {...props} />}
+      screenOptions={{ headerShown: false }}
+    >
+      <Tabs.Screen name="index" />
+      <Tabs.Screen name="new" />
+      <Tabs.Screen name="stats" />
+    </Tabs>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -64,5 +90,3 @@ const styles = StyleSheet.create({
     }),
   },
 });
-
-export default FooterNavigation;
