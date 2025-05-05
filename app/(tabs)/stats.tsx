@@ -1,5 +1,6 @@
 import { TripData, clearAllTripData, getTripData } from "@/utils/storageHelper";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useState } from "react";
 import {
   Alert,
   Button,
@@ -13,23 +14,24 @@ import TripInfoCard from "../../components/TripInfoCard"; // Adjust the path if 
 export default function StatsScreen() {
   const [tripData, setTripData] = useState<TripData[] | null>(null);
 
-  useEffect(() => {
-    const fetchTripData = async () => {
-      const data = await getTripData();
-      // unpack
-      const tripArray = data ? Object.values(data) : [];
-      // sort by trip date if available
-      tripArray.sort((a, b) => {
-        if (a.date && b.date) {
-          return new Date(b.date).getTime() - new Date(a.date).getTime();
-        }
-        return 0;
-      });
-      setTripData(tripArray);
-    };
+  const fetchTripData = async () => {
+    const data = await getTripData();
+    const tripArray = data ? Object.values(data) : [];
+    // Sort by trip date if available
+    tripArray.sort((a, b) => {
+      if (a.date && b.date) {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      }
+      return 0;
+    });
+    setTripData(tripArray);
+  };
 
-    fetchTripData();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchTripData();
+    }, [])
+  );
 
   const handleClearAll = async () => {
     try {
