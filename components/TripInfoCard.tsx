@@ -65,17 +65,34 @@ const TripInfoCard: React.FC<Props> = ({ trip, refreshData }) => {
         </Text>
       ) : (
         <View>
-          <TextInput
-            style={[
-              styles.input,
-              { color: colors.text, borderColor: colors.border },
-            ]}
-            placeholder="Enter end voltage"
-            placeholderTextColor={colors.secondaryText}
-            keyboardType="decimal-pad"
-            value={editingEndVoltage?.toString()}
-            onChangeText={(text) => setEditingEndVoltage(safeParseNumber(text))}
-          />
+          <View style={styles.voltageRow}>
+            <View style={styles.voltageContainer}>
+              <Text style={[styles.label, { color: colors.text }]}>
+                Start Voltage
+              </Text>
+              <Text style={[styles.text, { color: colors.secondaryText }]}>
+                {trip.startVoltage}V
+              </Text>
+            </View>
+            <View style={styles.voltageContainer}>
+              <Text style={[styles.label, { color: colors.text }]}>
+                End Voltage
+              </Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  { color: colors.text, borderColor: colors.border },
+                ]}
+                placeholder="Enter end voltage"
+                placeholderTextColor={colors.secondaryText}
+                keyboardType="decimal-pad"
+                value={editingEndVoltage?.toString()}
+                onChangeText={(text) =>
+                  setEditingEndVoltage(safeParseNumber(text))
+                }
+              />
+            </View>
+          </View>
           <Button title="Save" onPress={handleSaveEndVoltage} />
         </View>
       )}
@@ -114,11 +131,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 4,
   },
+  label: {
+    fontSize: 12,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
   input: {
     borderWidth: 1,
     borderRadius: 8,
     padding: 8,
+    fontSize: 14,
+  },
+  voltageRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 8,
+  },
+  voltageContainer: {
+    flex: 1,
+    marginHorizontal: 4,
   },
 });
 
