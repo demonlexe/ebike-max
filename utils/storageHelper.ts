@@ -5,7 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export type TripData = {
   origin: string;
   destination: string;
-  voltage: string;
+  startVoltage: number;
+  endVoltage?: number;
   tripInsights: {
     elevationGain: number;
     elevationLoss: number;

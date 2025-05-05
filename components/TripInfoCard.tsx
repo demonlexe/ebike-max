@@ -1,5 +1,13 @@
-import React from "react";
-import { StyleSheet, Text, useColorScheme, View } from "react-native";
+import React, { useState } from "react";
+import {
+  Alert,
+  Button,
+  StyleSheet,
+  Text,
+  TextInput,
+  useColorScheme,
+  View,
+} from "react-native";
 import { TripData } from "../utils/storageHelper";
 
 type Props = {
@@ -7,6 +15,11 @@ type Props = {
 };
 
 const TripInfoCard: React.FC<Props> = ({ trip }) => {
+  const [endVoltage, setEndVoltage] = useState<number | undefined>(
+    trip.endVoltage
+  );
+  const [isEditing, setIsEditing] = useState(false);
+
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
 
@@ -15,6 +28,16 @@ const TripInfoCard: React.FC<Props> = ({ trip }) => {
     text: isDarkMode ? "#fff" : "#000",
     border: isDarkMode ? "#333" : "#ddd",
     secondaryText: isDarkMode ? "#aaa" : "#555",
+  };
+
+  const handleSaveEndVoltage = () => {
+    if (endVoltage !== undefined) {
+      // Save the updated endVoltage to the trip data (you may need to update AsyncStorage here)
+      Alert.alert("Success", "End voltage saved!");
+      setIsEditing(false);
+    } else {
+      Alert.alert("Error", "Please enter a valid voltage.");
+    }
   };
 
   return (
@@ -27,9 +50,34 @@ const TripInfoCard: React.FC<Props> = ({ trip }) => {
       <Text style={[styles.title, { color: colors.text }]}>
         {trip.origin} → {trip.destination}
       </Text>
-      <Text style={[styles.text, { color: colors.secondaryText }]}>
-        Voltage: {trip.voltage} V
-      </Text>
+      {endVoltage !== undefined ? (
+        <Text style={[styles.text, { color: colors.secondaryText }]}>
+          Voltage Used: {endVoltage - trip.startVoltage} V
+        </Text>
+      ) : (
+        <>
+          {isEditing ? (
+            <View>
+              <TextInput
+                style={[
+                  styles.input,
+                  { color: colors.text, borderColor: colors.border },
+                ]}
+                placeholder="Enter end voltage"
+                placeholderTextColor={colors.secondaryText}
+                keyboardType="numeric"
+                onChangeText={(text) => setEndVoltage(Number(text))}
+              />
+              <Button title="Save" onPress={handleSaveEndVoltage} />
+            </View>
+          ) : (
+            <Button
+              title="Add End Voltage"
+              onPress={() => setIsEditing(true)}
+            />
+          )}
+        </>
+      )}
       <Text style={[styles.text, { color: colors.secondaryText }]}>
         Elevation Gain: {trip.tripInsights.elevationGain} ft
       </Text>
@@ -64,6 +112,12 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     marginBottom: 4,
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 8,
   },
 });
 

@@ -51,7 +51,8 @@ export default function NewTripScreen() {
     const tripData: TripData = {
       origin,
       destination,
-      voltage,
+      startVoltage: parseFloat(voltage),
+      endVoltage: undefined,
       tripInsights: {
         elevationGain,
         elevationLoss,
