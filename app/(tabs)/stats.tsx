@@ -48,8 +48,12 @@ export default function StatsScreen() {
     <View style={styles.container}>
       <ScrollView>
         {tripData && tripData.length > 0 ? (
-          tripData.map((trip, index) => (
-            <TripInfoCard key={index} trip={trip} />
+          tripData.map((trip) => (
+            <TripInfoCard
+              key={trip.id}
+              trip={trip}
+              refreshData={fetchTripData} // Pass the callback
+            />
           ))
         ) : (
           <Text style={styles.emptyText}>No trip data available.</Text>

@@ -13,9 +13,10 @@ import { TripData, updateTripData } from "../utils/storageHelper";
 
 type Props = {
   trip: TripData;
+  refreshData: () => void; // Callback to refresh parent data
 };
 
-const TripInfoCard: React.FC<Props> = ({ trip }) => {
+const TripInfoCard: React.FC<Props> = ({ trip, refreshData }) => {
   const [editingEndVoltage, setEditingEndVoltage] = useState<
     string | number | undefined
   >(trip.endVoltage);
@@ -40,6 +41,7 @@ const TripInfoCard: React.FC<Props> = ({ trip }) => {
       // Update the trip data in AsyncStorage
       await updateTripData(trip.id, { endVoltage: Number(editingEndVoltage) });
       Alert.alert("Success", "End voltage updated successfully!");
+      refreshData(); // Trigger parent to refresh data
     } catch (error) {
       console.error("Failed to update trip data:", error);
       Alert.alert("Error", "Failed to update trip data.");
@@ -58,7 +60,8 @@ const TripInfoCard: React.FC<Props> = ({ trip }) => {
       </Text>
       {trip.endVoltage !== undefined ? (
         <Text style={[styles.text, { color: colors.secondaryText }]}>
-          Voltage Used: {trip.endVoltage - trip.startVoltage} V
+          Voltage Used: {trip.startVoltage - trip.endVoltage}V (
+          {trip.startVoltage}V to {trip.endVoltage}V)
         </Text>
       ) : (
         <View>
