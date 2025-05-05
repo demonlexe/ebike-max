@@ -15,9 +15,9 @@ export default function NewTripScreen() {
   const [destination, setDestination] = useState("");
   const [voltage, setVoltage] = useState("");
   const [tripInsights, setTripInsights] = useState<{
-    elevationGain?: number;
-    elevationLoss?: number;
-    distance?: number;
+    elevationGain?: string;
+    elevationLoss?: string;
+    distance?: string;
   }>({
     elevationGain: undefined,
     elevationLoss: undefined,
@@ -37,16 +37,14 @@ export default function NewTripScreen() {
       alert("Please enter a valid voltage.");
       return;
     }
-    if (tripInsights.elevationGain === undefined) {
-      alert("Please enter a valid elevation gain.");
-      return;
-    }
-    if (tripInsights.elevationLoss === undefined) {
-      alert("Please enter a valid elevation loss.");
-      return;
-    }
-    if (tripInsights.distance === undefined) {
-      alert("Please enter a valid distance.");
+
+    const elevationGain = parseFloat(tripInsights.elevationGain || "0");
+    const elevationLoss = parseFloat(tripInsights.elevationLoss || "0");
+    const distance = parseFloat(tripInsights.distance || "0");
+    if (isNaN(elevationGain) || isNaN(elevationLoss) || isNaN(distance)) {
+      alert(
+        "Please enter valid numeric values for elevation gain, loss, and distance."
+      );
       return;
     }
     // Save the trip data
@@ -55,9 +53,9 @@ export default function NewTripScreen() {
       destination,
       voltage,
       tripInsights: {
-        elevationGain: tripInsights.elevationGain,
-        elevationLoss: tripInsights.elevationLoss,
-        distance: tripInsights.distance,
+        elevationGain,
+        elevationLoss,
+        distance,
       },
     };
     saveTripData(tripData)
@@ -70,11 +68,13 @@ export default function NewTripScreen() {
       });
   };
 
-  const stringifyIfNumber = (value: number | undefined) => {
+  const stringifyIfNumber = (value: string | undefined) => {
     if (value === undefined) {
       return undefined;
     }
-    return String(value);
+    // remove non-numeric characters
+    const numericValue = value.toString().replace(/[^0-9.]/g, "");
+    return numericValue;
   };
 
   const colors = {
@@ -142,7 +142,7 @@ export default function NewTripScreen() {
         placeholderTextColor={colors.placeholder}
         value={voltage}
         onChangeText={setVoltage}
-        keyboardType="numeric"
+        keyboardType="decimal-pad"
       />
 
       <View
@@ -168,9 +168,9 @@ export default function NewTripScreen() {
         placeholderTextColor={colors.placeholder}
         value={stringifyIfNumber(tripInsights.elevationGain)}
         onChangeText={(value) =>
-          setTripInsights({ ...tripInsights, elevationGain: parseFloat(value) })
+          setTripInsights({ ...tripInsights, elevationGain: value })
         }
-        keyboardType="numeric"
+        keyboardType="decimal-pad"
       />
 
       <Text style={[styles.label, { color: colors.text }]}>Elevation Loss</Text>
@@ -187,9 +187,9 @@ export default function NewTripScreen() {
         placeholderTextColor={colors.placeholder}
         value={stringifyIfNumber(tripInsights.elevationLoss)}
         onChangeText={(value) =>
-          setTripInsights({ ...tripInsights, elevationLoss: parseFloat(value) })
+          setTripInsights({ ...tripInsights, elevationLoss: value })
         }
-        keyboardType="numeric"
+        keyboardType="decimal-pad"
       />
 
       <Text style={[styles.label, { color: colors.text }]}>Distance</Text>
@@ -206,9 +206,9 @@ export default function NewTripScreen() {
         placeholderTextColor={colors.placeholder}
         value={stringifyIfNumber(tripInsights.distance)}
         onChangeText={(value) =>
-          setTripInsights({ ...tripInsights, distance: parseFloat(value) })
+          setTripInsights({ ...tripInsights, distance: value })
         }
-        keyboardType="numeric"
+        keyboardType="decimal-pad"
       />
 
       <View style={styles.buttonContainer}>
