@@ -29,7 +29,6 @@ export default function NewTripScreen() {
   const isDarkMode = colorScheme === "dark";
 
   const handleSubmit = () => {
-    // validate all fields
     if (!origin || !destination || !voltage) {
       alert("Please fill in all fields.");
       return;
@@ -48,6 +47,7 @@ export default function NewTripScreen() {
       );
       return;
     }
+
     // Save the trip data
     const dat: NewTripData = {
       origin,
@@ -59,9 +59,18 @@ export default function NewTripScreen() {
         distance,
       },
     };
+
     saveTripData(dat)
       .then(() => {
         alert("Trip data saved successfully!");
+        setOrigin("");
+        setDestination("");
+        setVoltage("");
+        setTripInsights({
+          elevationGain: undefined,
+          elevationLoss: undefined,
+          distance: undefined,
+        });
       })
       .catch((error) => {
         console.error("Error saving trip data:", error);
