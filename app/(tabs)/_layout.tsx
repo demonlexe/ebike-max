@@ -42,8 +42,14 @@ export default function Layout() {
       screenOptions={{ headerShown: false }}
     >
       <Tabs.Screen name="index" />
-      <Tabs.Screen name="new-trip" />
-      <Tabs.Screen name="stats" />
+      <Tabs.Screen
+        name="new-trip"
+        options={{ headerShown: true, headerTitle: "New Trip" }}
+      />
+      <Tabs.Screen
+        name="stats"
+        options={{ headerShown: true, headerTitle: "Stats" }}
+      />
     </Tabs>
   );
 }
