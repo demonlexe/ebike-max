@@ -1,23 +1,68 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import { TripData, clearAllTripData, getTripData } from "@/utils/storageHelper";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useState } from "react";
+import { Alert, Button, FlatList, StyleSheet, Text, View } from "react-native";
+import TripInfoCard from "../../components/TripInfoCard"; // Adjust the path if necessary
 
 export default function StatsScreen() {
+  const [tripData, setTripData] = useState<TripData[] | null>(null);
+
+  const fetchTripData = async () => {
+    const data = await getTripData();
+    const tripArray = data ? Object.values(data) : [];
+    // Sort by trip date if available
+    tripArray.sort((a, b) => {
+      if (a.date && b.date) {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+      }
+      return 0;
+    });
+    setTripData(tripArray);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchTripData();
+    }, [])
+  );
+
+  const handleClearAll = async () => {
+    try {
+      await clearAllTripData();
+      setTripData(null); // Clear the state
+      Alert.alert("Success", "All trip data has been cleared.");
+    } catch (error) {
+      console.error("Error clearing trip data:", error);
+      Alert.alert("Error", "Failed to clear trip data.");
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.emptyBox} />
+      {tripData && tripData.length > 0 ? (
+        <FlatList
+          data={tripData}
+          keyExtractor={(trip) => trip.id}
+          renderItem={({ item }) => (
+            <TripInfoCard trip={item} refreshData={fetchTripData} />
+          )}
+        />
+      ) : (
+        <Text style={styles.emptyText}>No trip data available.</Text>
+      )}
+      <Button title="Clear All Trips" onPress={handleClearAll} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 16,
   },
-  emptyBox: {
-    width: "100%",
-    height: 100,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    backgroundColor: "#f9f9f9",
+  emptyText: {
+    textAlign: "center",
+    marginTop: 20,
+    color: "#888",
   },
 });
