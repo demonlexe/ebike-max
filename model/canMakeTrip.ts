@@ -11,7 +11,7 @@ export function canMakeTrip(
 ): boolean {
   const startPercent = voltageToPercent(startVoltage);
   const predictedDrop = Math.max(
-    model.predict([distanceMiles, elevationGainFeet, elevationLossFeet])[0],
+    model.predict([distanceMiles, elevationGainFeet])[0],
     0
   );
   const endPercent = startPercent - predictedDrop;

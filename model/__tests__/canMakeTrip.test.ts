@@ -28,8 +28,8 @@ describe("canMakeTrip", () => {
   it("returns false for a long trip with high elevation gain", () => {
     const newTrip: Omit<TrainingDataPoint, "endVoltage"> = {
       startVoltage: 47.0,
-      distanceMiles: 10.0,
-      elevationGainFeet: 1200,
+      distanceMiles: 20.0,
+      elevationGainFeet: 2000,
       elevationLossFeet: 100,
       batteryType: "lithium-48v",
     };
