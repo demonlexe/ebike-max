@@ -1,7 +1,7 @@
 import MLR from "ml-regression-multivariate-linear";
 import { voltageToPercent } from "../utils/voltageToPercent";
 
-export function canMakeTripPrediction(
+export function canMakeTrip(
   model: MLR,
   startVoltage: number,
   distanceMiles: number,
@@ -10,9 +10,15 @@ export function canMakeTripPrediction(
   thresholdPercent: number = 10
 ): boolean {
   const startPercent = voltageToPercent(startVoltage);
-  const netElev = elevationGainFeet - elevationLossFeet;
-  const predictedDrop = model.predict([distanceMiles, netElev])[0];
+  const predictedDrop = Math.max(
+    model.predict([distanceMiles, elevationGainFeet, elevationLossFeet])[0],
+    0
+  );
   const endPercent = startPercent - predictedDrop;
+
+  console.log("Start %:", startPercent);
+  console.log("Predicted % drop:", predictedDrop);
+  console.log("Remaining %:", startPercent - predictedDrop);
 
   return endPercent > thresholdPercent;
 }

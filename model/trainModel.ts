@@ -10,9 +10,12 @@ export function trainModel(trainingData: TrainingDataPoint[]): MLR {
     const startPct = voltageToPercent(point.startVoltage);
     const endPct = voltageToPercent(point.endVoltage);
     const percentDrop = startPct - endPct;
-    const netElev = point.elevationGainFeet - point.elevationLossFeet;
 
-    inputs.push([point.distanceMiles, netElev]);
+    inputs.push([
+      point.distanceMiles,
+      point.elevationGainFeet,
+      point.elevationLossFeet,
+    ]);
     outputs.push([percentDrop]);
   }
 
